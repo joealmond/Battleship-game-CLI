@@ -165,6 +165,8 @@ airBomb = int(17)
 # nem tökéletes az elkerülő algoritmus
 # Megoldás oop -vel hajó öntőforma irányokkal stb.
 
+# Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
+
 print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
 i = 0
 while i <= airBomb:
