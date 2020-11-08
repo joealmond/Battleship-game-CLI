@@ -60,6 +60,7 @@ Destroyer = int(2)
 
 Ships = [Carrier, Battleship, Cruiser, Submarine, Destroyer]
 shipNum = len(Ships)
+allRandShipsCoord = []
 
 Message = "Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): "
 
@@ -112,46 +113,58 @@ def randDir(coord,Shiptype):
 
     if coord[0] <= 11-Shiptype:
         direction.append("down")
-    return(random.choice(direction))
+    return random.choice(direction)
 
 def ship(coord,dir,Shiptype):
     table[coord[0]][coord[1]] = " H "
+    allShipsCoord = []
+    shipCoord = coord[0],coord[1]
+    allShipsCoord.append(shipCoord)
     if dir == "right":
         i = 0
         while i < Shiptype:
             while table[coord[0]][coord[1]+i] != " H ":
                 table[coord[0]][coord[1]+i] = " H "
+                shipCoord = coord[0],coord[1]+i
+                allShipsCoord.append(shipCoord)
             i += 1
-
     if dir == "left":
         i = 0
         while i < Shiptype:
             while table[coord[0]][coord[1]-i] != " H ":
                 table[coord[0]][coord[1]-i] = " H "
+                shipCoord = coord[0],coord[1]-i
+                allShipsCoord.append(shipCoord)
             i += 1
-
     if dir == "up":
         i = 0
         while i < Shiptype:
             while table[coord[0]-i][coord[1]] != " H ":
                 table[coord[0]-i][coord[1]] = " H "
+                shipCoord = coord[0]-i,coord[1]
+                allShipsCoord.append(shipCoord)
             i += 1
-
     if dir == "down":
         i = 0
         while i < Shiptype:
             while table[coord[0]+i][coord[1]] != " H ":
                 table[coord[0]+i][coord[1]] = " H "
+                shipCoord = coord[0]+i,coord[1]
+                allShipsCoord.append(shipCoord)
             i += 1
+    return allShipsCoord   
 
 def randShips():
     coord = randCoord()
+    allShipsCoord = []
+    global allRandShipsCoord
     for i in Ships:
         dir = randDir(coord,i)
-        ship(coord,dir,i)
+        allShipsCoord = ship(coord,dir,i)
+        allRandShipsCoord.append(allShipsCoord)
         while table[coord[0]][coord[1]] == " H ":
             coord = randCoord()
-        i += 1
+    return allRandShipsCoord
 
 def inputCoord(Message):
     char = " abcdefghij"
@@ -168,6 +181,7 @@ def inputCoord(Message):
 
 def AirBombGame():
     airBomb = int(17)
+
     print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
     print()
     print("A légitámadásból", airBomb, "bombád maradt.")
@@ -207,9 +221,12 @@ def AirBombGame():
             coord = inputCoord(Message)
             AirY = coord[0]
             AirX = coord[1]
+        #if allRandShipsCoord[0][0]
         i += 1 
 
 randShips()
+
+#print(allRandShipsCoord[0][0])
 
 AirBombGame()
 
@@ -221,7 +238,7 @@ table_draw(table)
 
 
 # input szűrések
-# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között.
+# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között. (ritkán egyes hajók 1 egységgel rövidebbek!)
 # Játktípus választás, légitámadás, vagy hajócsata!
 # a játék végén összegzés, és eredményhírdetés.
 # sűlyedt kijelzése
