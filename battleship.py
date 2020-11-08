@@ -166,39 +166,64 @@ def inputCoord(Message):
         coord[1] = int(coord[1])
     return coord
 
-randShips()
-
-airBomb = int(17)
-print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
-i = 0
-while i <= airBomb:
-    print("A légitámadásból", airBomb-i, "bombád maradt.")
-    coord = inputCoord(Message)
+def AirBombGame():
+    airBomb = int(17)
+    print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
     print()
+    print("A légitámadásból", airBomb, "bombád maradt.")
+    coord = inputCoord(Message)
     AirY = coord[0]
     AirX = coord[1]
-    if table[AirX][AirY] == " H ":
-        table[AirX][AirY] = " B "
-        tableAirBomb[AirX][AirY] = " B "
-        print("Talált!")
-    else:
-        table[AirX][AirY] = " O "
-        tableAirBomb[AirX][AirY] = " O "
-        print("Mellé...")
     table_draw(tableAirBomb)
-    i += 1 
-table_draw(table)
+    i = 0
+    while i <= airBomb:
+        if table[AirX][AirY] == " H ":
+            table[AirX][AirY] = " B "
+            tableAirBomb[AirX][AirY] = " B "
+            table_draw(tableAirBomb)
+            print("Talált!")
+            print()
+            print("A légitámadásból", airBomb-i, "bombád maradt.")
+            coord = inputCoord(Message)
+            AirY = coord[0]
+            AirX = coord[1]
+        elif tableAirBomb[AirX][AirY] == " O " or tableAirBomb[AirX][AirY] == " B ":
+            while (tableAirBomb[AirX][AirY] != " O " and tableAirBomb[AirX][AirY] != " B ") != True:
+                table_draw(tableAirBomb)
+                print("Ide már lőttél!")
+                print()
+                print("A légitámadásból", airBomb-i, "bombád maradt. Ne pazarolj!")
+                coord = inputCoord(Message)
+                AirY = coord[0]
+                AirX = coord[1]
+                i += 1
+        else:
+            table[AirX][AirY] = " O "
+            tableAirBomb[AirX][AirY] = " O "
+            table_draw(tableAirBomb)
+            print("Mellé...")
+            print()
+            print("A légitámadásból", airBomb-i, "bombád maradt.")
+            coord = inputCoord(Message)
+            AirY = coord[0]
+            AirX = coord[1]
+        i += 1 
 
+randShips()
+
+AirBombGame()
+
+table_draw(table)
 
 
 # Megoldás oop -vel hajó öntőforma irányokkal stb.
 # webes verzió elkészítése
 
 
-# képernyő törlés
 # input szűrések
-# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a halyók között.
-# ha már lőttél oda előzőleg hibajelzés kiírás?
+# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között.
+# Játktípus választás, légitámadás, vagy hajócsata!
+# a játék végén összegzés, és eredményhírdetés.
 # sűlyedt kijelzése
 # Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
 
