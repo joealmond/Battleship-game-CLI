@@ -158,26 +158,36 @@ randShips()
 
 airBomb = int(17)
 
-# sűlyedt kijelzése
-# kilép a program
-# kéernyő törlés
-# input szűrés
-# nem tökéletes az elkerülő algoritmus
 # Megoldás oop -vel hajó öntőforma irányokkal stb.
+# webes verzió elkészítése
 
+
+# kéernyő törlés
+# input szűrések
+# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a halyók között.
+# ha már lőttél oda előzőleg hibajelzés kiírás?
+# sűlyedt kijelzése
 # Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
 
 print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
 i = 0
 while i <= airBomb:
     print("A légitámadásból", airBomb-i, "bombád maradt.")
-    airBombCoord = input("Add meg a következő bomba koordinátáját pl.:(b,2): ")
-    print()
-    chair = " abcdefghij"
-# a "chaie" listában pontosítás szükséges!
-    AirY = int(chair.find(airBombCoord[0]))
-    AirX = int(airBombCoord[2])
-# a 10-e számot meg kell oldani
+# bement ellenőrzés:
+    char = " abcdefghij"
+    coord = [int(),int()]
+    while (coord[0]>=1 and coord[1]>=1 and coord[1]<=10) != True:
+        coordStr = input("Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): ")
+        coord = coordStr.casefold()
+        while ((len(coord)>=3 and coord[1]==",") or (len(coord)>=4 and coord[1]=="," and coord[3]!="0")) != True:
+            coord = input("Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): ")
+        coord = coord.split(",")
+        coord[0] = char.find(coord[0],1,11)
+        coord[1] = int(coord[1])
+# bement ellenőrzés vége.
+        print()
+    AirY = coord[0]
+    AirX = coord[1]
     if table[AirX][AirY] == " H ":
         table[AirX][AirY] = " B "
         tableAirBomb[AirX][AirY] = " B "
