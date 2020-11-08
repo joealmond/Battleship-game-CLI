@@ -24,12 +24,7 @@
 # Ha az összes ellenséges hajó elsűjedt akkor bejelentjük a győzelmet, és megmutatjuk mindkét táblát.
 
 import random
-
-
-#Főcím:
-print()
-print("          Torpedó játék")
-print()
+import os
 
 #Táblázat:
 table = [["   "," A "," B "," C "," D "," E "," F "," G "," H "," I "," J "],
@@ -66,11 +61,16 @@ Destroyer = int(2)
 Ships = [Carrier, Battleship, Cruiser, Submarine, Destroyer]
 shipNum = len(Ships)
 
+Message = "Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): "
+
 #Táblázat rajzoló ciklusfüggvény:
 def table_draw(table):
+    os.system('cls')
+    print()
+    print("          Torpedó játék")
+    print()
     row = int(0)
     col = int(0)
-
     for i in table[row]:
         for i in table:
             print(table[row][col], end="")
@@ -153,39 +153,28 @@ def randShips():
             coord = randCoord()
         i += 1
 
+def inputCoord(Message):
+    char = " abcdefghij"
+    coord = [int(),int()]
+    while (coord[0]>=1 and coord[1]>=1 and coord[1]<=10) != True:
+        coordStr = input(Message)
+        coord = coordStr.casefold()
+        while ((len(coord)>=3 and coord[1]==",") or (len(coord)>=4 and coord[1]=="," and coord[3]!="0")) != True:
+            coord = input(Message)
+        coord = coord.split(",")
+        coord[0] = char.find(coord[0],1,11)
+        coord[1] = int(coord[1])
+    return coord
 
 randShips()
 
 airBomb = int(17)
-
-# Megoldás oop -vel hajó öntőforma irányokkal stb.
-# webes verzió elkészítése
-
-
-# kéernyő törlés
-# input szűrések
-# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a halyók között.
-# ha már lőttél oda előzőleg hibajelzés kiírás?
-# sűlyedt kijelzése
-# Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
-
 print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
 i = 0
 while i <= airBomb:
     print("A légitámadásból", airBomb-i, "bombád maradt.")
-# bement ellenőrzés:
-    char = " abcdefghij"
-    coord = [int(),int()]
-    while (coord[0]>=1 and coord[1]>=1 and coord[1]<=10) != True:
-        coordStr = input("Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): ")
-        coord = coordStr.casefold()
-        while ((len(coord)>=3 and coord[1]==",") or (len(coord)>=4 and coord[1]=="," and coord[3]!="0")) != True:
-            coord = input("Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): ")
-        coord = coord.split(",")
-        coord[0] = char.find(coord[0],1,11)
-        coord[1] = int(coord[1])
-# bement ellenőrzés vége.
-        print()
+    coord = inputCoord(Message)
+    print()
     AirY = coord[0]
     AirX = coord[1]
     if table[AirX][AirY] == " H ":
@@ -199,3 +188,17 @@ while i <= airBomb:
     table_draw(tableAirBomb)
     i += 1 
 table_draw(table)
+
+
+
+# Megoldás oop -vel hajó öntőforma irányokkal stb.
+# webes verzió elkészítése
+
+
+# képernyő törlés
+# input szűrések
+# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a halyók között.
+# ha már lőttél oda előzőleg hibajelzés kiírás?
+# sűlyedt kijelzése
+# Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
+
