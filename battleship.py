@@ -62,6 +62,7 @@ Destroyer = int(2)
 Ships = [Carrier, Battleship, Cruiser, Submarine, Destroyer]
 shipNum = len(Ships)
 allRandShipsCoord = []
+ShinkShipNum = 0
 
 
 #Táblázat rajzoló ciklusfüggvény:
@@ -191,6 +192,7 @@ def sink(Air_y,Air_x):
     AirX = int(0)
     s = []
     shipPart = []
+    global ShinkShipNum
     for i in range(0,11):
         for k in range(0,11):
             if tableAirBomb[AirX][AirY] == " T ":
@@ -201,12 +203,14 @@ def sink(Air_y,Air_x):
         AirY += 1
     for i in allRandShipsCoord:
         if sorted(tuple(i)) == sorted(tuple(shipPart)):
+            ShinkShipNum += 1
             for i in shipPart:
                 tableAirBomb[i[0]][i[1]] = " S "
+                table[i[0]][i[1]] = " S "
 
 def AirBombGame():
     airBomb = int(17)
-    print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
+    print("A számítógép elhelyezte az öt hajóból álló flottát, kezdődhet a játék!" )
     print()
     print("q = Kilépés")
     print()
@@ -266,21 +270,27 @@ def AirBombGame():
 
 randShips()
 
-#print(allRandShipsCoord[0][0])
-
 AirBombGame()
 
 table_draw(table)
 
+if ShinkShipNum > 0:
+    print("Gratulálunk! ", ShinkShipNum, "hajót sűlyeszetél el a flottából!")
+else:
+    print("Legközelebbre több serencsét kívánunk...")
+print()
+print("Viszlát!")
 
+# Extra funkciók:
 # Megoldás oop -vel hajó öntőforma irányokkal stb.
 # webes verzió elkészítése
 
+# Tervezett funkciók:
+# Játktípus választás, légitámadás, vagy hajócsata! Játék ismétlése, menü...
+# a játék végén összegzés, és eredményhírdetés.
 
-# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között. (ritkán egyes hajók 1 egységgel rövidebbek!, atalána legkisebbel van a baj...)
-# Játktípus választás, légitámadás, vagy hajócsata!
-# a kilépés nem tökéletes, az AirBombGame funkció fő while loopjában van a hivba..
-# a játék végén összegzés, és eredményhírdetés. A játék végén is jelenejenek meg az elsűjedt hajók!
-# sűlyedt kijelzése - mi van ha a tlaálatok nem sorba jönnek!
-# Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
+# Hibajavítás:
+# a kilépés nem tökéletes, az AirBombGame funkció fő while loopjában van a hiba..
+# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között. (ritkán egyes hajók 1 egységgel rövidebbek!, talána legkisebbel van a baj...)
+# egy Cruiser nem sűlyedt el második elsúlyeszett hajóként...
 
