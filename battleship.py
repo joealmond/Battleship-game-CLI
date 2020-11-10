@@ -63,6 +63,7 @@ Ships = [Carrier, Battleship, Cruiser, Submarine, Destroyer]
 shipNum = len(Ships)
 allRandShipsCoord = []
 ShinkShipNum = 0
+airBomb = int(17)+1
 
 
 #Táblázat rajzoló ciklusfüggvény:
@@ -209,63 +210,50 @@ def sink(Air_y,Air_x):
                 table[i[0]][i[1]] = " S "
 
 def AirBombGame():
-    airBomb = int(17)
+    global airBomb
     print("A számítógép elhelyezte az öt hajóból álló flottát, kezdődhet a játék!" )
     print()
     print("q = Kilépés")
     print()
-    print("A légitámadásból", airBomb, "bombád maradt.")
-    coord = inputCoord()
-    AirY = coord[0]
-    AirX = coord[1]
-    while AirY == 11 or AirX == 11:
-        print("Kilépés..")
-        break
-    else:
+    print("A légitámadásból", airBomb-1, "bombád maradt.")
+    coord = [0,0]
+    AirY = 0
+    AirX = 0
+    i = 0
+    while i <= airBomb-1:
+        if table[AirX][AirY] == " H ":
+            table[AirX][AirY] = " T "
+            tableAirBomb[AirX][AirY] = " T "
+            sink(AirY,AirX)
+            table_draw(tableAirBomb)
+            print("Talált!")
+            print()
+            print("q = Kilépés")
+            print()
+            print("A légitámadásból", airBomb-i, "bombád maradt.")
+        elif tableAirBomb[AirX][AirY] == " O " or tableAirBomb[AirX][AirY] == " T ":
+            print("Ide már lőttél!")
+            print()
+            print("q = Kilépés")
+            print()
+            print("A légitámadásból", airBomb-i, "bombád maradt. Ne pazarolj!")
+        elif table[AirX][AirY] == " _ ": 
+            table[AirX][AirY] = " O "
+            tableAirBomb[AirX][AirY] = " O "
+            table_draw(tableAirBomb)
+            print("Mellé...")
+            print()
+            print("q = Kilépés")
+            print()
+            print("A légitámadásból", airBomb-i, "bombád maradt.")
+        coord = inputCoord()
+        AirY = coord[0]
+        AirX = coord[1]
         table_draw(tableAirBomb)
-        i = 0
-        while i <= airBomb:
-            if table[AirX][AirY] == " H ":
-                table[AirX][AirY] = " T "
-                tableAirBomb[AirX][AirY] = " T "
-                sink(AirY,AirX)
-                table_draw(tableAirBomb)
-                print("Talált!")
-                print()
-                print("q = Kilépés")
-                print()
-                print("A légitámadásból", airBomb-i, "bombád maradt.")
-                coord = inputCoord()
-                AirY = coord[0]
-                AirX = coord[1]
-            elif tableAirBomb[AirX][AirY] == " O " or tableAirBomb[AirX][AirY] == " T ":
-                while (tableAirBomb[AirX][AirY] != " O " and tableAirBomb[AirX][AirY] != " T ") != True:
-                    table_draw(tableAirBomb)
-                    print("Ide már lőttél!")
-                    print()
-                    print("q = Kilépés")
-                    print()
-                    print("A légitámadásból", airBomb-i, "bombád maradt. Ne pazarolj!")
-                    coord = inputCoord()
-                    AirY = coord[0]
-                    AirX = coord[1]
-                    i += 1
-            else: 
-                table[AirX][AirY] = " O "
-                tableAirBomb[AirX][AirY] = " O "
-                table_draw(tableAirBomb)
-                print("Mellé...")
-                print()
-                print("q = Kilépés")
-                print()
-                print("A légitámadásból", airBomb-i, "bombád maradt.")
-                coord = inputCoord()
-                AirY = coord[0]
-                AirX = coord[1]
-            while AirY == 11 or AirX == 11:
-                print("Kilépés..")
-                break
-            i += 1
+        if AirY == 11 or AirX == 11:
+            print("Kilépés..")
+            break
+        i += 1
         
 
 randShips()
@@ -275,9 +263,9 @@ AirBombGame()
 table_draw(table)
 
 if ShinkShipNum > 0:
-    print("Gratulálunk! ", ShinkShipNum, "hajót sűlyeszetél el a flottából!")
+    print("Gratulálunk!", ShinkShipNum, "hajót sűlyeszetél el a flottából!")
 else:
-    print("Legközelebbre több serencsét kívánunk...")
+    print("Legközelebbre több szerencsét kívánunk...")
 print()
 print("Viszlát!")
 
@@ -287,7 +275,6 @@ print("Viszlát!")
 
 # Tervezett funkciók:
 # Játktípus választás, légitámadás, vagy hajócsata! Játék ismétlése, menü...
-# a játék végén összegzés, és eredményhírdetés.
 
 # Hibajavítás:
 # a kilépés nem tökéletes, az AirBombGame funkció fő while loopjában van a hiba..
