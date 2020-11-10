@@ -25,9 +25,11 @@
 
 import random
 import os
+import msvcrt
 
 #Táblázat:
 table = [["   "," A "," B "," C "," D "," E "," F "," G "," H "," I "," J "],
+[" 0 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 1 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 2 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 3 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
@@ -36,10 +38,10 @@ table = [["   "," A "," B "," C "," D "," E "," F "," G "," H "," I "," J "],
 [" 6 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 7 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 8 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
-[" 9 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
-["10 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
+[" 9 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
 
 tableAirBomb = [["   "," A "," B "," C "," D "," E "," F "," G "," H "," I "," J "],
+[" 0 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 1 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 2 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 3 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
@@ -48,8 +50,7 @@ tableAirBomb = [["   "," A "," B "," C "," D "," E "," F "," G "," H "," I "," J
 [" 6 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 7 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 8 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
-[" 9 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
-["10 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
+[" 9 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
 
 #Hajó típusok:
 Carrier = int(5)
@@ -62,13 +63,6 @@ Ships = [Carrier, Battleship, Cruiser, Submarine, Destroyer]
 shipNum = len(Ships)
 allRandShipsCoord = []
 
-Message = "Adj meg egy koodrdinátát, vízszintes tengely a-j-ig, függőleges tengely 1-10-ig. pl.: (b,1): "
-
-def isNumber(x):
-    if type(x) == int:
-         return True
-    else:
-         return False
 
 #Táblázat rajzoló ciklusfüggvény:
 def table_draw(table):
@@ -172,18 +166,24 @@ def randShips():
             coord = randCoord()
     return allRandShipsCoord
 
-def inputCoord(Message):
-    char = " abcdefghij"
-    char1 = " 1234567891"
-    coord = [int(),int()]
-    coordStr = input(Message)
-    coord = coordStr.casefold()
-    while (((coord[0] == -1 or coord[0] == -1) != True) and ((len(coord)>=3 and coord[1]==",") or (len(coord)>=4 and coord[1]=="," and coord[3]!="0"))) != True:
-        coordStr = input(Message)
-        coord = coordStr.casefold()
-    coord = coord.split(",")
-    coord[0] = int(char.find(coord[0],1,11))
-    coord[1] = int(char1.find(coord[1],1,11))
+def inputCoord():
+    char = " abcdefghijq"
+    char1 = " 0123456789q"
+    coordStr1 = "_"
+    coordStr2 = "_"
+    coord = [int(-1),int(-1)]
+    while coord[0] == -1 and coord[0] != 11:
+        print("Adj meg egy értéket a vízszintes tengelyen a-j-ig:")
+        coordStr1 = msvcrt.getwch()
+        print("A koordináta:",coordStr1,",",coordStr2)
+        coordStr1.casefold()
+        coord[0] = char.find(coordStr1[0],1,12)
+    while coord[1] == -1 and coord[0] != 11:
+        print("Adj meg egy értéket a függőleges tengelyen 0-9-ig:")
+        coordStr2 = msvcrt.getwch()
+        print("A koordináta:",coordStr1,",",coordStr2)
+        coordStr2.casefold()
+        coord[1] = char1.find(coordStr2[0],1,12)
     return coord
 
 def sink(Air_y,Air_x):
@@ -208,46 +208,60 @@ def AirBombGame():
     airBomb = int(17)
     print("A számítőgép elhelyezte a hajóit, kezdődhet a játék!" )
     print()
+    print("q = Kilépés")
+    print()
     print("A légitámadásból", airBomb, "bombád maradt.")
-    coord = inputCoord(Message)
+    coord = inputCoord()
     AirY = coord[0]
     AirX = coord[1]
-    table_draw(tableAirBomb)
-    print(AirX,AirY)
-    i = 0
-    while i <= airBomb:
-        if table[AirX][AirY] == " H ":
-            table[AirX][AirY] = " T "
-            tableAirBomb[AirX][AirY] = " T "
-            sink(AirY,AirX)
-            table_draw(tableAirBomb)
-            print("Talált!")
-            print()
-            print("A légitámadásból", airBomb-i, "bombád maradt.")
-            coord = inputCoord(Message)
-            AirY = coord[0]
-            AirX = coord[1]
-        elif tableAirBomb[AirX][AirY] == " O " or tableAirBomb[AirX][AirY] == " T ":
-            while (tableAirBomb[AirX][AirY] != " O " and tableAirBomb[AirX][AirY] != " T ") != True:
+    while AirY == 11 or AirX == 11:
+        print("Kilépés..")
+        break
+    else:
+        table_draw(tableAirBomb)
+        i = 0
+        while i <= airBomb:
+            if table[AirX][AirY] == " H ":
+                table[AirX][AirY] = " T "
+                tableAirBomb[AirX][AirY] = " T "
+                sink(AirY,AirX)
                 table_draw(tableAirBomb)
-                print("Ide már lőttél!")
+                print("Talált!")
                 print()
-                print("A légitámadásból", airBomb-i, "bombád maradt. Ne pazarolj!")
-                coord = inputCoord(Message)
+                print("q = Kilépés")
+                print()
+                print("A légitámadásból", airBomb-i, "bombád maradt.")
+                coord = inputCoord()
                 AirY = coord[0]
                 AirX = coord[1]
-                i += 1
-        else:
-            table[AirX][AirY] = " O "
-            tableAirBomb[AirX][AirY] = " O "
-            table_draw(tableAirBomb)
-            print("Mellé...")
-            print()
-            print("A légitámadásból", airBomb-i, "bombád maradt.")
-            coord = inputCoord(Message)
-            AirY = coord[0]
-            AirX = coord[1]
-        i += 1
+            elif tableAirBomb[AirX][AirY] == " O " or tableAirBomb[AirX][AirY] == " T ":
+                while (tableAirBomb[AirX][AirY] != " O " and tableAirBomb[AirX][AirY] != " T ") != True:
+                    table_draw(tableAirBomb)
+                    print("Ide már lőttél!")
+                    print()
+                    print("q = Kilépés")
+                    print()
+                    print("A légitámadásból", airBomb-i, "bombád maradt. Ne pazarolj!")
+                    coord = inputCoord()
+                    AirY = coord[0]
+                    AirX = coord[1]
+                    i += 1
+            else: 
+                table[AirX][AirY] = " O "
+                tableAirBomb[AirX][AirY] = " O "
+                table_draw(tableAirBomb)
+                print("Mellé...")
+                print()
+                print("q = Kilépés")
+                print()
+                print("A légitámadásból", airBomb-i, "bombád maradt.")
+                coord = inputCoord()
+                AirY = coord[0]
+                AirX = coord[1]
+            while AirY == 11 or AirX == 11:
+                print("Kilépés..")
+                break
+            i += 1
         
 
 randShips()
@@ -263,9 +277,9 @@ table_draw(table)
 # webes verzió elkészítése
 
 
-# input szűrés nem tökéletes! a,c átmegy a "c" miatt hibát jelez.
 # nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között. (ritkán egyes hajók 1 egységgel rövidebbek!, atalána legkisebbel van a baj...)
 # Játktípus választás, légitámadás, vagy hajócsata!
+# a kilépés nem tökéletes, az AirBombGame funkció fő while loopjában van a hivba..
 # a játék végén összegzés, és eredményhírdetés. A játék végén is jelenejenek meg az elsűjedt hajók!
 # sűlyedt kijelzése - mi van ha a tlaálatok nem sorba jönnek!
 # Az ship funkció által elkészített hajó be kell tenni egy listába, így lehet majd a szűlyedt et megoldani!
