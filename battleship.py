@@ -52,23 +52,23 @@ tableAirBomb = [["   "," A "," B "," C "," D "," E "," F "," G "," H "," I "," J
 [" 8 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" 9 "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
 
-#Hajó típusok:
-Carrier = int(5)
-Battleship = int(4)
-Cruiser = int(3)
-Submarine = int(3)
-Destroyer = int(2)
+#Hajó típusok, a számértékük a hossukat jelöli:
+CARRIER = 5
+BATTLESHIP = 4
+CRUISER = 3
+SUBMARINE = 3
+DESTROYER = 2
 
-Ships = [Carrier, Battleship, Cruiser, Submarine, Destroyer]
-shipNum = len(Ships)
-allRandShipsCoord = []
-ShinkShipNum = 0
-airBomb = int(17)+1
+SHIPS = [CARRIER, BATTLESHIP, CRUISER, SUBMARINE, DESTROYER]
+SHIPFLOTTLENGTH = len(SHIPS)
+ALLRANDOMSHIPSCOORD = []
+SHINKSHIPCOUNT = 0
+AIRBOMBLEFT = 17
 
 
 #Táblázat rajzoló ciklusfüggvény:
 def table_draw(table):
-    os.system('cls')
+    # os.system('cls')
     print()
     print("          Torpedó játék")
     print()
@@ -87,86 +87,91 @@ table_draw(table)
 
 #print("A fenti táblán 5db hadihajót kell elhelyezned. Ad meg a hajók helyzetét egyenként!")
 #print()
-# Carrier = input("Add meg az 5 egység hosszú hordozó egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját (pl.: b1,b2): ")
-# Battleship = input("Add meg az 4 egység hosszú csatahajó egyik végének kezdő koordinátájátv, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
-# Cruiser = input("Add meg az 3 egység hosszú cirkáló egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
-# Submarine = input("Add meg az 3 egység hosszú tengeralattjáró egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
-# Destroyer = input("Add meg az 2 egység hosszú romboló egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
+# CARRIER = input("Add meg az 5 egység hosszú hordozó egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját (pl.: b1,b2): ")
+# BATTLESHIP = input("Add meg az 4 egység hosszú csatahajó egyik végének kezdő koordinátájátv, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
+# CRUISER = input("Add meg az 3 egység hosszú cirkáló egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
+# SUBMARINE = input("Add meg az 3 egység hosszú tengeralattjáró egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
+# DESTROYER = input("Add meg az 2 egység hosszú romboló egyik végének kezdő koordinátáját, valamint az irányát meghatározó függőleges vagy vizszintes irányban lévő szomszédos cella koordinátáját: ")
 
-def randCoord():
-    x = int(0)
-    y = int(0)
-    x = random.randint(1, 10)
-    y = random.randint(1, 10)
-    return x, y
 
-def randDir(coord,Shiptype):
+# def randDir(shipLength):
 
-    direction = []
+direction = []
+dircoord = [0,0]
+x = random.randint(1, 10)
+y = random.randint(1, 10)
+a = 0
+coord = [x,y]
+print("x,y random coordináták:",coord)
+table[coord[0]][coord[1]] = " H "
+shipLength = SHIPS[a]
+while a < SHIPFLOTTLENGTH:
+    a += 1
+print("random coordináták:",x,y)
+if y >= shipLength:
+    dircoord = dircoord[0]+1,dircoord[1]
+    print("jobb",dircoord)
+    direction.append(dircoord)
+    dircoord = dircoord[0]-1,dircoord[1]
+if y <= 11-shipLength:
+    dircoord = dircoord[0]-1,dircoord[1]
+    print("bal",dircoord)
+    direction.append(dircoord)
+    dircoord = dircoord[0]+1,dircoord[1]
+if x >= shipLength:
+    dircoord = dircoord[0],dircoord[1]+1
+    print("fel",dircoord)
+    direction.append(dircoord)
+    dircoord = dircoord[0],dircoord[1]-1
+if x <= 11-shipLength:
+    dircoord = dircoord[0],dircoord[1]-1
+    print("le",dircoord)
+    direction.append(dircoord)
+    dircoord = dircoord[0],dircoord[1]+1
+print("lehetséges irányok:",direction)
+print("random irány:",random.choice(direction))
 
-    if coord[1] >= Shiptype:
-        direction.append("left")
-
-    if coord[1] <= 11-Shiptype:
-        direction.append("right")
-
-    if coord[0] >= Shiptype:
-        direction.append("up")
-
-    if coord[0] <= 11-Shiptype:
-        direction.append("down")
-    return random.choice(direction)
-
-def ship(coord,dir,Shiptype):
-    table[coord[0]][coord[1]] = " H "
-    allShipsCoord = []
-    shipCoord = coord[0],coord[1]
-    allShipsCoord.append(shipCoord)
-    if dir == "right":
-        i = 0
-        while i < Shiptype:
-            while table[coord[0]][coord[1]+i] != " H ":
-                table[coord[0]][coord[1]+i] = " H "
-                shipCoord = coord[0],coord[1]+i
-                allShipsCoord.append(shipCoord)
+def ship(shipLength):
+    #table[coord[0]][coord[1]] = " H "
+    dir = randDir(coord,shipLength)
+    print("rdir:",dir)
+    print("Yo")
+    print("hajó hossz:",shipLength)
+    allSHIPSCoord = []
+    shipCoord = [coord[0] + dir[0]][coord[1] + dir[1]]
+    print(shipCoord)
+    allSHIPSCoord.append(shipCoord)
+    i = 0
+    while i < shipLength:
+        if table[shipCoord[0]][shipCoord[1]] != " H ":
             i += 1
-    if dir == "left":
-        i = 0
-        while i < Shiptype:
-            while table[coord[0]][coord[1]-i] != " H ":
-                table[coord[0]][coord[1]-i] = " H "
-                shipCoord = coord[0],coord[1]-i
-                allShipsCoord.append(shipCoord)
-            i += 1
-    if dir == "up":
-        i = 0
-        while i < Shiptype:
-            while table[coord[0]-i][coord[1]] != " H ":
-                table[coord[0]-i][coord[1]] = " H "
-                shipCoord = coord[0]-i,coord[1]
-                allShipsCoord.append(shipCoord)
-            i += 1
-    if dir == "down":
-        i = 0
-        while i < Shiptype:
-            while table[coord[0]+i][coord[1]] != " H ":
-                table[coord[0]+i][coord[1]] = " H "
-                shipCoord = coord[0]+i,coord[1]
-                allShipsCoord.append(shipCoord)
-            i += 1
-    return allShipsCoord   
-
-def randShips():
-    coord = randCoord()
-    allShipsCoord = []
-    global allRandShipsCoord
-    for i in Ships:
-        dir = randDir(coord,i)
-        allShipsCoord = ship(coord,dir,i)
-        allRandShipsCoord.append(allShipsCoord)
-        while table[coord[0]][coord[1]] == " H ":
+            print("Van hely?:",i)
+        else:
+            i = 0
             coord = randCoord()
-    return allRandShipsCoord
+            shipCoord = dir[0],dir[1]
+            dir = randDir(coord,shipLength)
+            print("Újragenerálás!")
+        i = 0
+        while i <= shipLength:
+            print("Yoo")
+            table[dir[0]][dir[1]] = " H "
+            shipCoord = dir[0],dir[1]
+            allSHIPSCoord.append(shipCoord)
+            i += 1 
+    return allSHIPSCoord   
+
+def randSHIPS():
+    global ALLRANDOMSHIPSCOORD
+    a = 0
+    while a < SHIPFLOTTLENGTH:
+        allSHIPSCoord = []
+        allSHIPSCoord = ship(SHIPS[a])
+        ALLRANDOMSHIPSCOORD.append(allSHIPSCoord)
+        print("Leraktam a hajót!")
+        print("a értéke(max. a hajók száma.):",a)
+        a += 1
+    return ALLRANDOMSHIPSCOORD
 
 def inputCoord():
     char = " abcdefghijq"
@@ -193,7 +198,7 @@ def sink(Air_y,Air_x):
     AirX = int(0)
     s = []
     shipPart = []
-    global ShinkShipNum
+    global SHINKSHIPCOUNT
     for i in range(0,11):
         for k in range(0,11):
             if tableAirBomb[AirX][AirY] == " T ":
@@ -202,9 +207,9 @@ def sink(Air_y,Air_x):
             AirX += 1     
         AirX = 0
         AirY += 1
-    for i in allRandShipsCoord:
+    for i in ALLRANDOMSHIPSCOORD:
         if sorted(tuple(i)) == sorted(tuple(shipPart)):
-            ShinkShipNum += 1
+            SHINKSHIPCOUNT += 1
             for i in shipPart:
                 tableAirBomb[i[0]][i[1]] = " S "
                 table[i[0]][i[1]] = " S "
@@ -256,14 +261,14 @@ def AirBombGame():
         i += 1
         
 
-randShips()
+# randSHIPS()
 
-AirBombGame()
+# AirBombGame()
 
 table_draw(table)
 
-if ShinkShipNum > 0:
-    print("Gratulálunk!", ShinkShipNum, "hajót sűlyeszetél el a flottából!")
+if SHINKSHIPCOUNT > 0:
+    print("Gratulálunk!", SHINKSHIPCOUNT, "hajót sűlyeszetél el a flottából!")
 else:
     print("Legközelebbre több szerencsét kívánunk...")
 print()
@@ -277,7 +282,8 @@ print("Viszlát!")
 # Játktípus választás, légitámadás, vagy hajócsata! Játék ismétlése, menü...
 
 # Hibajavítás:
-# a kilépés nem tökéletes, az AirBombGame funkció fő while loopjában van a hiba..
-# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között. (ritkán egyes hajók 1 egységgel rövidebbek!, talána legkisebbel van a baj...)
-# egy Cruiser nem sűlyedt el második elsúlyeszett hajóként...
+# nem tökéletes az elkerülő algoritmus? Lehetne plusz egy karakter távolság a hajók között. (ritkán egyes hajók 1 egységgel rövidebbek!, talána legkisebbel van a baj...) Ilyenkor a sink sem működik..
 
+# Dokumentáció:
+# kommentelni a részeket, áttekinthetővé tenni a kódot.
+# Mi okozott nehézséget: komplex bemeneti szűrő észítése, funkciók egymásba ágyazása, loopok egymásba ágyazása, műveleti sorrend
