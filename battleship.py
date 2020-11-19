@@ -294,6 +294,7 @@ print("Viszlát!")
 # Játktípus választás, légitámadás, vagy hajócsata! Játék ismétlése, menü...
 
 # Hibajavítás:
+# ha két különböző halyót találok el anélkül hogy elsűlyednének, akkor a sűlyedés minden esetben meghiúsul. Megoldás, hogy azonosítom a hajókat.
 # Bombák száma esetlen
 
 # Dokumentáció:
