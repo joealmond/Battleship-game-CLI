@@ -59,9 +59,10 @@ CRUISER = 3
 SUBMARINE = 3
 DESTROYER = 2
 
-a = 0
+SHIPNO = 0
 SHIPS = [CARRIER, BATTLESHIP, CRUISER, SUBMARINE, DESTROYER]
-SHIPLENGTH = SHIPS[a]
+SHIPSIGNS = [" C ", " B ", " R ", " U ", " D "]
+SHIPLENGTH = SHIPS[SHIPNO]
 SHIPFLOTTLENGTH = len(SHIPS)
 AIRBOMBLEFT = 30
 
@@ -140,11 +141,12 @@ def checkShipPlace(x,y,randomDirection,SHIPLENGTH):
     return i
 
 
-def placeShip(x,y,randomDirection,SHIPLENGTH):
+def placeShip(x,y,randomDirection,SHIPLENGTH,SHIPNO):
+    shipSign = SHIPSIGNS[SHIPNO]
     randomShipCoords = []
     i = 0
     while i < SHIPLENGTH:
-        table[y + randomDirection[1]*i][x + randomDirection[0]*i] = " H "
+        table[y + randomDirection[1]*i][x + randomDirection[0]*i] = shipSign
         shipCoords = (y + randomDirection[1]*i, x + randomDirection[0]*i)
         randomShipCoords.append(shipCoords)
         print("rand ship coords:", randomShipCoords)
@@ -154,20 +156,20 @@ def placeShip(x,y,randomDirection,SHIPLENGTH):
 
 def placeRandomShips():
     allRandomShipsCoords = []
-    a = 0
-    while a < SHIPFLOTTLENGTH:
-        SHIPLENGTH = SHIPS[a]
+    global SHIPNO
+    while SHIPNO < SHIPFLOTTLENGTH:
+        SHIPLENGTH = SHIPS[SHIPNO]
         x,y = randomStartCoords()
         randomDirection = randomLegalDirection(x,y)
         checkShipPlaceValue = checkShipPlace(x,y,randomDirection,SHIPLENGTH)
         print("check ship place value:",checkShipPlaceValue == SHIPLENGTH)
         if checkShipPlaceValue == SHIPLENGTH:
-            placeShipCoords = placeShip(x,y,randomDirection,SHIPLENGTH)
+            placeShipCoords = placeShip(x,y,randomDirection,SHIPLENGTH,SHIPNO)
             print("place ship Coords:",placeShipCoords == SHIPLENGTH)
             if len(placeShipCoords) == SHIPLENGTH:
                 allRandomShipsCoords.append(placeShipCoords)
-                a += 1
-                print("a értéke:", a)
+                SHIPNO += 1
+                print("hajó sorszám:", SHIPNO)
         print("köv hajótípus:", SHIPLENGTH)
     return allRandomShipsCoords
 
@@ -202,7 +204,7 @@ def sink(Air_y,Air_x,allRandomShipsCoords,shinkShipCount):
     shipPart = []
     for i in range(0,10):
         for k in range(0,10):
-            if table[AirX][AirY] == " T ":
+            if table[AirX][AirY] != " _ ":
                 s = (AirX,AirY)
                 shipPart.append(s)
             AirX += 1     
@@ -240,8 +242,7 @@ def AirBombGame():
         if AirY == 10 or AirX == 10:
             print("Kilépés..")
             break
-        if table[AirX][AirY] == " H ":
-            table[AirX][AirY] = " T "
+        if table[AirX][AirY] != " _ " and tableAirBomb[AirX][AirY] != " T ":
             tableAirBomb[AirX][AirY] = " T "
             shinkShipCount = sink(AirY,AirX,allRandomShipsCoords,shinkShipCount)
             if shinkShipCount == SHIPFLOTTLENGTH:
@@ -260,7 +261,6 @@ def AirBombGame():
             print()
             print("A légitámadásból", AIRBOMBLEFT-i, "bombád maradt. Ne pazarolj!")
         elif table[AirX][AirY] == " _ ": 
-            table[AirX][AirY] = " O "
             tableAirBomb[AirX][AirY] = " O "
             table_draw(tableAirBomb)
             print("Mellé...")
@@ -294,8 +294,9 @@ print("Viszlát!")
 # Játktípus választás, légitámadás, vagy hajócsata! Játék ismétlése, menü...
 
 # Hibajavítás:
-# ha két különböző halyót találok el anélkül hogy elsűlyednének, akkor a sűlyedés minden esetben meghiúsul. Megoldás, hogy azonosítom a hajókat.
+# ha két különböző hajót találok el anélkül hogy elsűlyednének, akkor a sűlyedés minden esetben meghiúsul. Megoldás, hogy azonosítom a hajókat.
 # Bombák száma esetlen
+# A végén a kijelzésnél szerpeljenek a táblán a hajók a lövések és a sűlyesztések is.
 
 # Dokumentáció:
 # kommentelni a részeket, áttekinthetővé tenni a kódot.
