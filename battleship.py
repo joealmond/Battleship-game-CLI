@@ -28,7 +28,7 @@ import os
 import msvcrt
 
 #Táblázat:
-table = [
+TABLE = [
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
@@ -40,7 +40,31 @@ table = [
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
 
-tableAirBomb = [
+TABLE_SHOOT = [
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
+
+TABLE_LOW = [
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
+[" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "]]
+
+TABLE_HIT = [
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
 [" _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "," _ "],
@@ -68,8 +92,8 @@ AIRBOMBLEFT = 30
 
 
 #Táblázat rajzoló ciklusfüggvény:
-def table_draw(table):
-    # os.system('cls')
+def table_draw(TABLE):
+    os.system('cls')
     print()
     print("          Torpedó játék")
     print()
@@ -77,18 +101,18 @@ def table_draw(table):
     col = int(0)
     print("   ","A ","B ","C ","D ","E ","F ","G ","H ","I ","J ")
     n = 0
-    for i in table[row]:
+    for i in TABLE[row]:
         print("", n, "", end="")
         n += 1
-        for i in table:
-            print(table[row][col], end="")
+        for i in TABLE:
+            print(TABLE[row][col], end="")
             col += 1     
         col = 0
         row += 1
         print()
     print()
 
-# table_draw(table)
+# table_draw(TABLE)
 
 #print("A fenti táblán 5db hadihajót kell elhelyezned. Ad meg a hajók helyzetét egyenként!")
 #print()
@@ -134,9 +158,9 @@ def checkShipPlace(x,y,randomDirection,SHIPLENGTH):
     randomDirection = randomDirection
     i = 0
     while i < SHIPLENGTH:
-        if table[y + randomDirection[1]*i][x + randomDirection[0]*i] == " _ ":
+        if TABLE[y + randomDirection[1]*i][x + randomDirection[0]*i] == " _ ":
             i += 1
-        elif table[y + randomDirection[1]*i][x + randomDirection[0]*i] != " _ ":
+        elif TABLE[y + randomDirection[1]*i][x + randomDirection[0]*i] != " _ ":
             break
     return i
 
@@ -146,7 +170,7 @@ def placeShip(x,y,randomDirection,SHIPLENGTH,SHIPNO):
     randomShipCoords = []
     i = 0
     while i < SHIPLENGTH:
-        table[y + randomDirection[1]*i][x + randomDirection[0]*i] = shipSign
+        TABLE[y + randomDirection[1]*i][x + randomDirection[0]*i] = shipSign
         shipCoords = (y + randomDirection[1]*i, x + randomDirection[0]*i)
         randomShipCoords.append(shipCoords)
         print("rand ship coords:", randomShipCoords)
@@ -196,27 +220,25 @@ def inputCoord():
     return coord
 
 
-def sink(Air_y,Air_x,allRandomShipsCoords,shinkShipCount):
+def sink(shinkShipCount):
     shinkShipCount = shinkShipCount
-    AirY = 0
-    AirX = 0
-    s = []
-    shipPart = []
-    for i in range(0,10):
-        for k in range(0,10):
-            if table[AirX][AirY] != " _ ":
-                s = (AirX,AirY)
-                shipPart.append(s)
-            AirX += 1     
-        AirX = 0
-        AirY += 1
-    print(shipPart)
-    for i in allRandomShipsCoords:
-        if sorted(tuple(i)) == sorted(tuple(shipPart)):
+    shipNo = 0
+    shipCountInLine = 0
+    shipCountInAllLines = 0
+    allShipCount = []
+    while shipNo < SHIPFLOTTLENGTH:
+        for i in range(0,10):
+            shipCountInLine = TABLE_SHOOT[i].count(SHIPSIGNS[shipNo])
+            shipCountInAllLines = shipCountInLine + shipCountInAllLines
+        allShipCount.append(shipCountInAllLines)
+        shipCountInAllLines = 0
+        if allShipCount[shipNo] == SHIPS[shipNo]:
+            for n in range(0,10):
+                for k in range(0,10):
+                    if TABLE_SHOOT[n][k] == SHIPSIGNS[shipNo]:
+                        TABLE_SHOOT[n][k] = " S "
             shinkShipCount += 1
-            for i in shipPart:
-                tableAirBomb[i[0]][i[1]] = " S "
-                table[i[0]][i[1]] = " S "
+        shipNo += 1
     return shinkShipCount
 
 
@@ -229,7 +251,7 @@ def AirBombGame():
     print("q = Kilépés")
     print()
     print("A légitámadásból", AIRBOMBLEFT-1, "bombád maradt.")
-    table_draw(table)
+    table_draw(TABLE)
     coord = [0,0]
     AirY = 0
     AirX = 0
@@ -238,31 +260,41 @@ def AirBombGame():
         coord = inputCoord()
         AirY = coord[0]
         AirX = coord[1]
-        table_draw(tableAirBomb)
+        table_draw(TABLE_HIT)
         if AirY == 10 or AirX == 10:
             print("Kilépés..")
             break
-        if table[AirX][AirY] != " _ " and tableAirBomb[AirX][AirY] != " T ":
-            tableAirBomb[AirX][AirY] = " T "
-            shinkShipCount = sink(AirY,AirX,allRandomShipsCoords,shinkShipCount)
+        if TABLE[AirX][AirY] != " _ " and TABLE_HIT[AirX][AirY] != " T " and TABLE_HIT[AirX][AirY] != " S ":
+            low = TABLE[AirX][AirY]
+            low1 = low[1]
+            low = " " + low1.casefold() + " "
+            TABLE_LOW[AirX][AirY] = low
+            TABLE_HIT[AirX][AirY] = " T "
+            TABLE_SHOOT[AirX][AirY] = TABLE[AirX][AirY]
+            shinkShipCount = sink(shinkShipCount)
+            if TABLE_SHOOT[AirX][AirY] == " S ":
+                for n in range(0,10):
+                    for k in range(0,10):
+                        if TABLE_SHOOT[n][k] == " S ":
+                            TABLE_HIT[n][k] = " S "
             if shinkShipCount == SHIPFLOTTLENGTH:
                 break
-            table_draw(tableAirBomb)
+            table_draw(TABLE_HIT)
             print("elsűlyeszett hajók száma:", shinkShipCount)
             print("Talált!")
             print()
             print("q = Kilépés")
             print()
             print("A légitámadásból", AIRBOMBLEFT-i, "bombád maradt.")
-        elif tableAirBomb[AirX][AirY] == " O " or tableAirBomb[AirX][AirY] == " T ":
+        elif TABLE_HIT[AirX][AirY] == " O " or TABLE_HIT[AirX][AirY] == " T " or TABLE_HIT[AirX][AirY] == " S ":
             print("Ide már lőttél!")
             print()
             print("q = Kilépés")
             print()
             print("A légitámadásból", AIRBOMBLEFT-i, "bombád maradt. Ne pazarolj!")
-        elif table[AirX][AirY] == " _ ": 
-            tableAirBomb[AirX][AirY] = " O "
-            table_draw(tableAirBomb)
+        elif TABLE[AirX][AirY] == " _ ": 
+            TABLE_HIT[AirX][AirY] = " O "
+            table_draw(TABLE_HIT)
             print("Mellé...")
             print()
             print("q = Kilépés")
@@ -274,7 +306,19 @@ def AirBombGame():
 
 shinkShipCount = AirBombGame()
 
-table_draw(table)
+shipNo = 0
+while shipNo < SHIPFLOTTLENGTH:
+    for n in range(0,10):
+        for k in range(0,10):
+            if TABLE[n][k] == SHIPSIGNS[shipNo] and TABLE_SHOOT[n][k] != " S ":
+                TABLE_SHOOT[n][k] = SHIPSIGNS[shipNo]
+            elif TABLE_HIT[n][k] == " O ":
+                TABLE_SHOOT[n][k] = " O "
+            elif TABLE_HIT[n][k] == " T ":
+                TABLE_SHOOT[n][k] = TABLE_LOW[n][k]
+    shipNo += 1
+
+table_draw(TABLE_SHOOT)
 
 if shinkShipCount > 0 and shinkShipCount < SHIPFLOTTLENGTH:
     print("Gratulálunk!", shinkShipCount, "hajót sűlyeszetél el a flottából!")
@@ -290,13 +334,9 @@ print("Viszlát!")
 # webes verzió elkészítése
 
 # Tervezett funkciók:
-# hajók betűjele különböző legyen a táblán
 # Játktípus választás, légitámadás, vagy hajócsata! Játék ismétlése, menü...
 
 # Hibajavítás:
-# ha két különböző hajót találok el anélkül hogy elsűlyednének, akkor a sűlyedés minden esetben meghiúsul. Megoldás, hogy azonosítom a hajókat.
-# Bombák száma esetlen
-# A végén a kijelzésnél szerpeljenek a táblán a hajók a lövések és a sűlyesztések is.
 
 # Dokumentáció:
 # kommentelni a részeket, áttekinthetővé tenni a kódot.
